@@ -90,6 +90,15 @@ async function createAccount(name, email, studentID, phone = "N/A") {
     }
 }
 
+async function uploadData(docId, name, email, phone, competency) {
+      try {
+             await setDoc(doc(db, "users", docId), { name, email, phone, competency});
+             console.log("Data uploaded to Firestore successfully!");
+      } catch (error) {
+             console.error("Error uploading document: ", error);
+      }
+}
+
 // 🔹 Function: Update Tutor Data
 async function updateTutorData(email, newData) {
     try {
