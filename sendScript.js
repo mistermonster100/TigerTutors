@@ -62,84 +62,101 @@ const TEACHER_LIST = {
     "Ms. Johnson": "johnson456",
     "Dr. Adams": "adams789"
 };
-
-// 🔹 Create Tutor Account in Firestore
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 🔹 Function: Create a Tutor Account
 async function createAccount(name, email, studentID, phone = "N/A") {
-    const tutorRef = doc(db, "tutors", email);
-    const tutorSnap = await getDoc(tutorRef);
+    try {
+        const tutorRef = doc(db, "tutors", email);
+        const tutorSnap = await getDoc(tutorRef);
 
-    if (tutorSnap.exists()) {
-        throw new Error("Account with this email already exists!");
+        if (tutorSnap.exists()) {
+            throw new Error("⚠️ Account with this email already exists!");
+        }
+
+        const tutorData = {
+            name,
+            email,
+            studentID,
+            phone,
+            competency: {},
+            visibility: {},
+            hours: []
+        };
+
+        await setDoc(tutorRef, tutorData);
+        alert("✅ Account created successfully!");
+    } catch (error) {
+        alert(`❌ Error: ${error.message}`);
     }
-
-    // 🔹 Firestore Document Structure
-    const tutorData = {
-        name,
-        email,
-        studentID,
-        phone,
-        competency: {},
-        visibility: {},
-        hours: []
-    };
-
-    await setDoc(tutorRef, tutorData);
 }
 
-async function uploadData(docId, name, email, phone, competency) {
-      try {
-             await setDoc(doc(db, "users", docId), { name, email, phone, competency});
-             console.log("Data uploaded to Firestore successfully!");
-      } catch (error) {
-             console.error("Error uploading document: ", error);
-      }
+// 🔹 Function: Update Tutor Data
+async function updateTutorData(email, newData) {
+    try {
+        const tutorRef = doc(db, "tutors", email);
+        await updateDoc(tutorRef, newData);
+        alert("✅ Data updated successfully!");
+    } catch (error) {
+        alert(`❌ Error: ${error.message}`);
+    }
 }
 
-// 🔹 Add a Verified Skill Using a Teacher Code
+// 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
-    if (!VALID_CODES[code]) {
-        throw new Error("Invalid teacher code!");
+    try {
+        const tutorRef = doc(db, "tutors", email);
+        const tutorSnap = await getDoc(tutorRef);
+
+        if (!tutorSnap.exists()) {
+            throw new Error("⚠️ Tutor account not found!");
+        }
+
+        if (!VALID_CODES[code]) {
+            throw new Error("⚠️ Invalid teacher code!");
+        }
+
+        const tutor = tutorSnap.data();
+        const { subject, className } = VALID_CODES[code];
+
+        if (!tutor.competency[subject]) tutor.competency[subject] = [];
+        if (!tutor.visibility[subject]) tutor.visibility[subject] = [];
+
+        if (!tutor.competency[subject].includes(className)) {
+            tutor.competency[subject].push(className);
+            tutor.visibility[subject].push(className);
+        }
+
+        await updateDoc(tutorRef, { competency: tutor.competency, visibility: tutor.visibility });
+        alert(`✅ Skill added: ${className} in ${subject}!`);
+    } catch (error) {
+        alert(`❌ Error: ${error.message}`);
     }
-
-    const tutorRef = doc(db, "tutors", email);
-    const tutorSnap = await getDoc(tutorRef);
-
-    if (!tutorSnap.exists()) {
-        throw new Error("Tutor account not found!");
-    }
-
-    const tutor = tutorSnap.data();
-    const { subject, className } = VALID_CODES[code];
-
-    if (!tutor.competency[subject]) tutor.competency[subject] = [];
-    if (!tutor.visibility[subject]) tutor.visibility[subject] = [];
-
-    if (!tutor.competency[subject].includes(className)) {
-        tutor.competency[subject].push(className);
-        tutor.visibility[subject].push(className);
-    }
-
-    await updateDoc(tutorRef, { competency: tutor.competency, visibility: tutor.visibility });
 }
 
-// 🔹 Function to Track Hours
+// 🔹 Function: Log Hours with Optional Verification
 async function logHours(email, hoursLogged, teacherCode = null) {
-    if (isNaN(hoursLogged) || hoursLogged <= 0) {
-        throw new Error("Please enter a valid number of hours.");
+    try {
+        if (isNaN(hoursLogged) || hoursLogged <= 0) {
+            throw new Error("⚠️ Please enter a valid number of hours.");
+        }
+
+        const isVerified = TEACHER_LIST.hasOwnProperty(teacherCode);
+        const tutorRef = doc(db, "tutors", email);
+
+        await updateDoc(tutorRef, {
+            hours: arrayUnion({
+                date: new Date().toISOString().split("T")[0],
+                hours: hoursLogged,
+                teacherCode: isVerified ? teacherCode : null,
+                verified: isVerified
+            })
+        });
+
+        alert(`✅ Hours logged successfully! ${isVerified ? "Verified by teacher." : "Pending verification."}`);
+    } catch (error) {
+        alert(`❌ Error: ${error.message}`);
     }
-
-    const isVerified = TEACHER_LIST.hasOwnProperty(teacherCode);
-
-    const tutorRef = doc(db, "tutors", email);
-    await updateDoc(tutorRef, {
-        hours: arrayUnion({
-            date: new Date().toISOString().split("T")[0],
-            hours: hoursLogged,
-            teacherCode: isVerified ? teacherCode : null,
-            verified: isVerified
-        })
-    });
 }
 
 // 🔹 Export Functions for Other Scripts
-export { createAccount, addSkill, logHours };
+export { createAccount, updateTutorData, addSkill, logHours };
