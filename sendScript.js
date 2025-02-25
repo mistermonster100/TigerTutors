@@ -86,6 +86,15 @@ async function createAccount(name, email, studentID, phone = "N/A") {
     await setDoc(tutorRef, tutorData);
 }
 
+async function uploadData(docId, name, email, phone, competency) {
+      try {
+             await setDoc(doc(db, "users", docId), { name, email, phone, competency});
+             console.log("Data uploaded to Firestore successfully!");
+      } catch (error) {
+             console.error("Error uploading document: ", error);
+      }
+}
+
 // 🔹 Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
     if (!VALID_CODES[code]) {
