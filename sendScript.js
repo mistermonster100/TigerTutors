@@ -41,6 +41,8 @@ const VALID_CODES = {
     "S-EH": { subject: "Social Studies", className: "European History" },
     "S-APM": { subject: "Social Studies", className: "AP Microeconomics" },
     "S-APMA": { subject: "Social Studies", className: "AP Macroeconomics" },
+    "S-G": { subject: "Social Studies", className: "Government" },
+    "S-APG": { subject: "Social Studies", className: "AP/ACP Government" },
 
     "P-1": { subject: "Physics", className: "Physics 1" },
     "P-2": { subject: "Physics", className: "Physics 2" },
@@ -64,24 +66,38 @@ const TEACHER_LIST = {
     "Dr. Adams": "adams789"
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 🔹 Default Competency Structure (Populated with `false` initially)
+function getDefaultCompetency() {
+    return {
+        "Math": [],
+        "English": [],
+        "Social Studies": [],
+        "Physics": [],
+        "Chemistry": [],
+        "Computer Science": [],
+        "Biology": []
+    };
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Create a Tutor Account
 async function createAccount(name, email, studentID, phone = "N/A") {
-    console.log("createAccount has been run");
     try {
-        const tutorRef = doc(db, "users", email);
+        const tutorRef = doc(db, "tutors", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (tutorSnap.exists()) {
             throw new Error("⚠️ Account with this email already exists!");
         }
 
+        // Competency Map: Each subject is an array of booleans (all `false` initially)
+        const competency = getDefaultCompetency();
+
         const tutorData = {
             name,
             email,
             studentID,
             phone,
-            competency: {},
-            visibility: {},
+            competency, // New Structure: 2D array map
             hours: []
         };
 
@@ -91,7 +107,32 @@ async function createAccount(name, email, studentID, phone = "N/A") {
         alert(`❌ Error: ${error.message}`);
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 🔹 Function: Update Competency (Toggle Visibility)
+async function toggleCompetency(email, subject, index, isVisible) {
+    try {
+        const tutorRef = doc(db, "tutors", email);
+        const tutorSnap = await getDoc(tutorRef);
 
+        if (!tutorSnap.exists()) {
+            throw new Error("⚠️ Tutor account not found!");
+        }
+
+        const tutor = tutorSnap.data();
+
+        if (!tutor.competency[subject]) {
+            throw new Error(`⚠️ Subject ${subject} not found in competency.`);
+        }
+
+        tutor.competency[subject][index] = isVisible; // Update visibility
+
+        await updateDoc(tutorRef, { competency: tutor.competency });
+        alert(`✅ ${subject} class ${index + 1} visibility updated!`);
+    } catch (error) {
+        alert(`❌ Error: ${error.message}`);
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function uploadData(docId, name, email, phone, competency) {
       try {
              await setDoc(doc(db, "users", docId), { name, email, phone, competency});
