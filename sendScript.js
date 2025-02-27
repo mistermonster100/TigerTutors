@@ -67,7 +67,7 @@ const TEACHER_LIST = {
 // 🔹 Function: Create a Tutor Account
 async function createAccount(name, email, studentID, phone = "N/A") {
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (tutorSnap.exists()) {
