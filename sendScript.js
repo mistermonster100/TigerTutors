@@ -17,7 +17,7 @@ const firebaseConfig = {
 // 🔹 Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Valid Teacher-Provided Codes for Certification
 const VALID_CODES = {
     "M-A1": { subject: "Math", className: "Algebra 1" },
@@ -55,7 +55,7 @@ const VALID_CODES = {
     "B-H": { subject: "Biology", className: "Honors Biology" },
     "B-AP": { subject: "Biology", className: "AP Biology" }
 };
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Teacher List with Verification Codes
 const TEACHER_LIST = {
     "Mr. Smith": "smith123",
