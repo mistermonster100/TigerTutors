@@ -16,20 +16,11 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    //add subcategories here, make sure they match the map in sendScript.js!
-    const subcategories = {
-                "Math": ["Algebra", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
-                "English": ["English 9", "English 10", "English 11", "English 12", "Speech"],
-                "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History","AP Microeconomics","AP Macroeconomics"],
-                "Physics": ["Physics 1", "Physics 2", "Physics C"],
-                "Chemistry": ["Honors Chemistry", "ACP/AP Chemistry"],
-                "Computer Science": ["CS Principles", "CS 1", "CS A", "Software Development"],
-                "Biology": ["Honors Biology", "AP Biology"]
-    };
 
     let jsonData = await fetchFirestoreData("users");
     let subjectJson = await fetchFirestoreData("subjects");
-
+    console.log(jsonData);
+    console.log(subjectJson);
 
     async function findTutors() {
 
@@ -90,17 +81,25 @@
         `;
     }
 
+    function convertArrayToObject(array) {
+        let result = {};
+        array.forEach(item => {
+            result[item.id] = item.classes;
+        });
+        return result;
+    }
 
     function updateSubcategories() {
                 //console.log("updateSubcategories is working");
+                let subjectObject = convertArrayToObject(subjectJson);
 
                 const subject = document.getElementById("subject").value;
                 const subcategorySelect = document.getElementById("subcategory");
                 subcategorySelect.innerHTML = '';
 
-                if (subject && subcategories[subject]) {
+                if (subject && subjectObject[subject]) {
                     subcategorySelect.style.display = "block";
-                    subcategories[subject].forEach(sub => {
+                    subjectObject[subject].forEach(sub => {
                         let option = document.createElement("option");
                         option.value = sub;
                         option.textContent = sub;
