@@ -32,6 +32,7 @@ const VALID_CODES = {
     "E-10": { subject: "English", className: "English 10" },
     "E-11": { subject: "English", className: "English 11" },
     "E-12": { subject: "English", className: "English 12" },
+    "E-SP": { subject: "English", className: "Speech" },
 
     "S-WH": { subject: "Social Studies", className: "World History" },
     "S-APH": { subject: "Social Studies", className: "AP World History" },
