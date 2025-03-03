@@ -139,14 +139,14 @@ async function toggleCompetency(email, subject, index, isVisible) {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function uploadData(docId, name, email, phone, competency) {
-      try {
-             await setDoc(doc(db, "users", docId), { name, email, phone, competency});
-             console.log("Data uploaded to Firestore successfully!");
-      } catch (error) {
-             console.error("Error uploading document: ", error);
-      }
+    try {
+        await setDoc(doc(db, "newUsers", docId), { name, email, phone, competency });
+        console.log("✅ Data uploaded to Firestore successfully!");
+    } catch (error) {
+        console.error("❌ Error uploading document: ", error);
+    }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Update Tutor Data
 async function updateTutorData(email, newData) {
     try {
@@ -157,11 +157,11 @@ async function updateTutorData(email, newData) {
         alert(`❌ Error: ${error.message}`);
     }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
     try {
-        const tutorRef = doc(db, "users", email);
+        const tutorRef = doc(db, "tutors", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (!tutorSnap.exists()) {
@@ -175,21 +175,20 @@ async function addSkill(email, code) {
         const tutor = tutorSnap.data();
         const { subject, className } = VALID_CODES[code];
 
-        if (!tutor.competency[subject]) tutor.competency[subject] = [];
-        if (!tutor.visibility[subject]) tutor.visibility[subject] = [];
-
-        if (!tutor.competency[subject].includes(className)) {
-            tutor.competency[subject].push(className);
-            tutor.visibility[subject].push(className);
+        if (!tutor.competency[subject]) {
+            tutor.competency[subject] = [];
         }
 
-        await updateDoc(tutorRef, { competency: tutor.competency, visibility: tutor.visibility });
+        // 🛠️ New: Push "true" for visibility when adding a new skill
+        tutor.competency[subject].push(true);
+
+        await updateDoc(tutorRef, { competency: tutor.competency });
         alert(`✅ Skill added: ${className} in ${subject}!`);
     } catch (error) {
         alert(`❌ Error: ${error.message}`);
     }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
 async function logHours(email, hoursLogged, teacherCode = null) {
     try {
