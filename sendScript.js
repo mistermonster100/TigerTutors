@@ -79,6 +79,11 @@ function getDefaultCompetency() {
     };
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+document.getElementById("createAccount").addEventListener("click", async () => {
+    event.preventDefault();
+    createAccount(document.getElementById("name").value, document.getElementById("email").value, document.getElementById("student-id").value);
+});
+
 // 🔹 Function: Create a Tutor Account
 async function createAccount(name, email, studentID, phone = "N/A") {
     try {
