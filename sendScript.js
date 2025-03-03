@@ -150,7 +150,7 @@ async function uploadData(docId, name, email, phone, competency) {
 // 🔹 Function: Update Tutor Data
 async function updateTutorData(email, newData) {
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         await updateDoc(tutorRef, newData);
         alert("✅ Data updated successfully!");
     } catch (error) {
@@ -198,7 +198,7 @@ async function logHours(email, hoursLogged, teacherCode = null) {
         }
 
         const isVerified = TEACHER_LIST.hasOwnProperty(teacherCode);
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
 
         await updateDoc(tutorRef, {
             hours: arrayUnion({
