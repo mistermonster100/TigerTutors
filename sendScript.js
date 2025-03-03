@@ -20,43 +20,43 @@ const db = getFirestore(app);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Valid Teacher-Provided Codes for Certification
 const VALID_CODES = {
-    "M-A1": { subject: "Math", className: "Algebra 1" },
-    "M-GE": { subject: "Math", className: "Geometry" },
-    "M-A2": { subject: "Math", className: "Algebra 2" },
-    "M-PC": { subject: "Math", className: "Precalculus" },
-    "M-CAB": { subject: "Math", className: "Calculus AB" },
-    "M-CBC": { subject: "Math", className: "Calculus BC" },
-    "M-C3": { subject: "Math", className: "Calculus 3" },
+    "M-A1": { subject: "Math", className: "Algebra 1", level: 0 },
+    "M-GE": { subject: "Math", className: "Geometry", level: 1 },
+    "M-A2": { subject: "Math", className: "Algebra 2", level: 2 },
+    "M-PC": { subject: "Math", className: "Precalculus", level: 3 },
+    "M-CAB": { subject: "Math", className: "Calculus AB", level: 4 },
+    "M-CBC": { subject: "Math", className: "Calculus BC", level: 5 },
+    "M-C3": { subject: "Math", className: "Calculus 3", level: 6 },
 
-    "E-9": { subject: "English", className: "English 9" },
-    "E-10": { subject: "English", className: "English 10" },
-    "E-11": { subject: "English", className: "English 11" },
-    "E-12": { subject: "English", className: "English 12" },
-    "E-SP": { subject: "English", className: "Speech" },
+    "E-9": { subject: "English", className: "English 9", level: 0 },
+    "E-10": { subject: "English", className: "English 10", level: 1 },
+    "E-11": { subject: "English", className: "English 11", level: 2 },
+    "E-12": { subject: "English", className: "English 12", level: 3 },
+    "E-SP": { subject: "English", className: "Speech", level: 4 },
 
-    "S-WH": { subject: "Social Studies", className: "World History" },
-    "S-APH": { subject: "Social Studies", className: "AP World History" },
-    "S-UH": { subject: "Social Studies", className: "US History" },
-    "S-APU": { subject: "Social Studies", className: "AP US History" },
-    "S-EH": { subject: "Social Studies", className: "European History" },
-    "S-APM": { subject: "Social Studies", className: "AP Microeconomics" },
-    "S-APMA": { subject: "Social Studies", className: "AP Macroeconomics" },
-    "S-G": { subject: "Social Studies", className: "Government" },
-    "S-APG": { subject: "Social Studies", className: "AP/ACP Government" },
+    "S-WH": { subject: "Social Studies", className: "World History", level: 0 },
+    "S-APH": { subject: "Social Studies", className: "AP World History", level: 1 },
+    "S-UH": { subject: "Social Studies", className: "US History", level: 2 },
+    "S-APU": { subject: "Social Studies", className: "AP US History", level: 3 },
+    "S-EH": { subject: "Social Studies", className: "European History", level: 4 },
+    "S-APM": { subject: "Social Studies", className: "AP Microeconomics", level: 5 },
+    "S-APMA": { subject: "Social Studies", className: "AP Macroeconomics", level: 6 },
+    "S-G": { subject: "Social Studies", className: "Government", level: 7 },
+    "S-APG": { subject: "Social Studies", className: "AP/ACP Government", level: 8 },
 
-    "P-1": { subject: "Physics", className: "Physics 1" },
-    "P-2": { subject: "Physics", className: "Physics 2" },
-    "P-C": { subject: "Physics", className: "Physics C" },
+    "P-1": { subject: "Physics", className: "Physics 1", level: 0 },
+    "P-2": { subject: "Physics", className: "Physics 2", level: 1 },
+    "P-C": { subject: "Physics", className: "Physics C", level: 2 },
 
-    "C-HC": { subject: "Chemistry", className: "Honors Chemistry" },
-    "C-AP": { subject: "Chemistry", className: "AP Chemistry" },
+    "C-HC": { subject: "Chemistry", className: "Honors Chemistry", level: 0 },
+    "C-AP": { subject: "Chemistry", className: "AP Chemistry", level: 1 },
 
-    "CS-P": { subject: "Computer Science", className: "CS Principles" },
-    "CS-1": { subject: "Computer Science", className: "CS 1" },
-    "CS-A": { subject: "Computer Science", className: "CS A" },
+    "CS-P": { subject: "Computer Science", className: "CS Principles", level: 0 },
+    "CS-1": { subject: "Computer Science", className: "CS 1", level: 1 },
+    "CS-A": { subject: "Computer Science", className: "CS A", level: 2 },
 
-    "B-H": { subject: "Biology", className: "Honors Biology" },
-    "B-AP": { subject: "Biology", className: "AP Biology" }
+    "B-H": { subject: "Biology", className: "Honors Biology", level: 0 },
+    "B-AP": { subject: "Biology", className: "AP Biology", level: 1 }
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Teacher List with Verification Codes
