@@ -116,7 +116,7 @@ async function createAccount(name, email, studentID, phone = "N/A") {
 // 🔹 Function: Update Competency (Toggle Visibility)
 async function toggleCompetency(email, subject, index, isVisible) {
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (!tutorSnap.exists()) {
@@ -161,7 +161,7 @@ async function updateTutorData(email, newData) {
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (!tutorSnap.exists()) {
