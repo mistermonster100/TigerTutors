@@ -21,50 +21,72 @@
     let subjectJson = await fetchFirestoreData("subjects");
     console.log(jsonData);
     console.log(subjectJson);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    async function findTutors() {
+// 🔹 Subject-to-Class Level Map (Replace this with your actual mapping)
+const CLASS_LEVELS = {
+    "Math": ["Algebra 1", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
+    "English": ["English 9", "English 10", "English 11", "English 12", "Speech"],
+    "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History", "AP Microeconomics", "AP Macroeconomics"],
+    "Physics": ["Physics 1", "Physics 2", "Physics C"],
+    "Chemistry": ["Honors Chemistry", "AP Chemistry"],
+    "Computer Science": ["CS Principles", "CS 1", "CS A"],
+    "Biology": ["Honors Biology", "AP Biology"]
+};
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 🔹 Find Tutors Function
+async function findTutors() {
+    const subject = document.getElementById("subject").value;
+    const subcategory = document.getElementById("subcategory").value;
+    const resultsDiv = document.getElementById("results");
 
-        const subject = document.getElementById("subject").value; // Selected subject (e.g., Math)
-        const subcategory = document.getElementById("subcategory").value; // Selected class (e.g., Algebra 2)
-        const resultsDiv = document.getElementById("results");
-        resultsDiv.innerHTML = ""; // Clear previous results
+    resultsDiv.innerHTML = ""; // Clear previous results
 
-        // Validate selection
-        if (!subject || !subcategory) {
-            resultsDiv.innerHTML = "<p>Please select both a subject and a subcategory.</p>";
-            return;
-        }
+    if (!subject || !subcategory) {
+        resultsDiv.innerHTML = "<p>⚠️ Please select both a subject and a class.</p>";
+        return;
+    }
 
-        // Get subject index (to match the competency string)
-        const subjectIndex = subjectJson.findIndex(item => item.id === subject);
-        if (subjectIndex === -1) {
-            resultsDiv.innerHTML = "<p>Invalid subject selected.</p>";
-            return;
-        }
+    try {
+        const tutorsRef = collection(db, "users");
+        const querySnapshot = await getDocs(tutorsRef);
 
-        // Find the subcategory (class) index
-            /*let mathIndex = subjectJson.findIndex(item => item.id === "Math");
-            console.log(subjectJson[mathIndex].classes.indexOf("Algebra 2"))*/
+        let availableTutors = [];
 
-        const subcategoryIndex = subjectJson[subjectIndex].classes.indexOf(subcategory);
-        if (subcategoryIndex === -1) {
-            resultsDiv.innerHTML = "<p>Invalid class selected.</p>";
-            return;
-        }
+        querySnapshot.forEach((doc) => {
+            const tutor = doc.data();
 
-        // Required proficiency for the class (e.g., Algebra 2 requires level 3)
-        const requiredProficiency = subcategoryIndex + 1;
+            // Ensure the subject exists in the tutor's competency map
+            if (tutor.competency && tutor.competency[subject]) {
+                const classIndex = CLASS_LEVELS[subject].indexOf(subcategory);
 
-        // Filter tutors based on proficiency
-        const tutors = jsonData.filter(tutor => {
-            return parseInt(tutor.competency[subjectIndex]) >= requiredProficiency;
+                // Check if the tutor has the required level set to `true`
+                if (classIndex !== -1 && tutor.competency[subject][classIndex]) {
+                    availableTutors.push(tutor);
+                }
+            }
         });
 
-        // Display tutors with all classes they qualify for
-        resultsDiv.innerHTML = tutors.length
-            ? tutors.map(tutor => displayTutorClasses(tutor, subject, subjectIndex)).join("")
-            : `<p>No tutors found for ${subcategory} (requires proficiency level ${requiredProficiency}+).</p>`;
+        // Display Results
+        if (availableTutors.length === 0) {
+            resultsDiv.innerHTML = `<p>No tutors found for ${subcategory}.</p>`;
+        } else {
+            resultsDiv.innerHTML = availableTutors.map(tutor => `
+                <div class="tutor">
+                    <strong>${tutor.name}</strong><br>
+                    <strong>Qualified Classes:</strong> ${CLASS_LEVELS[subject].filter((_, i) => tutor.competency[subject][i]).join(", ")}<br>
+                    Email: <a href="mailto:${tutor.email}">${tutor.email}</a><br>
+                    Phone: ${tutor.phone || "N/A"}
+                </div>
+            `).join("");
+        }
+    } catch (error) {
+        resultsDiv.innerHTML = `<p>❌ Error fetching tutors: ${error.message}</p>`;
     }
+}
+
+// 🔹 Attach function to button
+document.getElementById("findTutorsBtn")?.addEventListener("click", findTutors);
 
     function displayTutorClasses(tutor, subject, subjectIndex) {
         const tutorProficiency = parseInt(tutor.competency[subjectIndex]); // Tutor's proficiency level
