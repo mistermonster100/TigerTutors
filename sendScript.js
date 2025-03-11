@@ -158,13 +158,21 @@ async function updateTutorData(email, newData) {
     }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 🔹 Function: Login Tutor
 async function loginTutor(event) {
-    event.preventDefault(); // Prevent form submission refresh
+    event.preventDefault(); // Prevent form from refreshing
 
-    const email = document.getElementById("login-email").value.trim();
-    const studentID = document.getElementById("login-student-id").value.trim();
+    const emailInput = document.getElementById("login-email");
+    const studentIDInput = document.getElementById("login-student-id");
     const messageBox = document.getElementById("account-message");
 
+    if (!emailInput || !studentIDInput || !messageBox) {
+        console.error("❌ Form elements not found! Ensure IDs are correct.");
+        return;
+    }
+
+    const email = emailInput.value.trim();
+    const studentID = studentIDInput.value.trim();
     messageBox.innerText = ""; // Clear previous messages
 
     try {
@@ -192,8 +200,15 @@ async function loginTutor(event) {
     }
 }
 
-// 🔹 Attach function to login form
-document.getElementById("login-form")?.addEventListener("submit", loginTutor);
+// 🔹 Ensure Event Listener Attaches After DOM Loads
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("login-form");
+    if (loginForm) {
+        loginForm.addEventListener("submit", loginTutor);
+    } else {
+        console.error("❌ Login form not found!");
+    }
+});
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
