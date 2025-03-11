@@ -146,7 +146,7 @@ async function uploadData(docId, name, email, phone, competency) {
              console.error("Error uploading document: ", error);
       }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Update Tutor Data
 async function updateTutorData(email, newData) {
     try {
@@ -157,7 +157,44 @@ async function updateTutorData(email, newData) {
         alert(`❌ Error: ${error.message}`);
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function loginTutor(event) {
+    event.preventDefault(); // Prevent form submission refresh
 
+    const email = document.getElementById("login-email").value.trim();
+    const studentID = document.getElementById("login-student-id").value.trim();
+    const messageBox = document.getElementById("account-message");
+
+    messageBox.innerText = ""; // Clear previous messages
+
+    try {
+        const tutorRef = doc(db, "tutors", email);
+        const tutorSnap = await getDoc(tutorRef);
+
+        if (!tutorSnap.exists()) {
+            throw new Error("⚠️ No account found with this email.");
+        }
+
+        const tutor = tutorSnap.data();
+
+        if (tutor.studentID !== studentID) {
+            throw new Error("⚠️ Incorrect student ID.");
+        }
+
+        // 🔹 Store session in localStorage
+        localStorage.setItem("loggedInTutor", email);
+
+        // 🔹 Redirect to Dashboard
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        messageBox.innerText = `❌ ${error.message}`;
+        messageBox.style.color = "red";
+    }
+}
+
+// 🔹 Attach function to login form
+document.getElementById("login-form")?.addEventListener("submit", loginTutor);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
     try {
@@ -189,7 +226,7 @@ async function addSkill(email, code) {
         alert(`❌ Error: ${error.message}`);
     }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
 async function logHours(email, hoursLogged, teacherCode = null) {
     try {
