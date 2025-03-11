@@ -160,19 +160,12 @@ async function updateTutorData(email, newData) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Login Tutor
 async function loginTutor(event) {
-    event.preventDefault(); // Prevent form from refreshing
+    event.preventDefault(); // Prevent form submission refresh
 
-    const emailInput = document.getElementById("login-email");
-    const studentIDInput = document.getElementById("login-student-id");
+    const email = document.getElementById("login-email").value.trim();
+    const studentID = document.getElementById("login-student-id").value.trim();
     const messageBox = document.getElementById("account-message");
 
-    if (!emailInput || !studentIDInput || !messageBox) {
-        console.error("❌ Form elements not found! Ensure IDs are correct.");
-        return;
-    }
-
-    const email = emailInput.value.trim();
-    const studentID = studentIDInput.value.trim();
     messageBox.innerText = ""; // Clear previous messages
 
     try {
@@ -200,15 +193,24 @@ async function loginTutor(event) {
     }
 }
 
-// 🔹 Ensure Event Listener Attaches After DOM Loads
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.getElementById("login-form");
-    if (loginForm) {
-        loginForm.addEventListener("submit", loginTutor);
-    } else {
-        console.error("❌ Login form not found!");
+document.getElementById("login-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("login-email")?.value.trim();
+    const studentID = document.getElementById("login-student-id")?.value.trim();
+
+    if (!email || !studentID) {
+        alert("⚠️ Please fill out all required fields.");
+        return;
+    }
+
+    try {
+        await loginTutor(email, studentID);
+    } catch (error) {
+        alert(`❌ Error creating account: ${error.message}`);
     }
 });
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
 async function addSkill(email, code) {
