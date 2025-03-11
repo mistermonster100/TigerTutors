@@ -166,17 +166,14 @@ async function updateTutorData(email, newData) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Login Tutor
-async function loginTutor(event) {
-    event.preventDefault(); // Prevent form submission refresh
+async function loginTutor(email, studentID) {
 
-    const email = document.getElementById("login-email").value.trim();
-    const studentID = document.getElementById("login-student-id").value.trim();
     const messageBox = document.getElementById("account-message");
 
     messageBox.innerText = ""; // Clear previous messages
 
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (!tutorSnap.exists()) {
