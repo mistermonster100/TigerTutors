@@ -79,10 +79,17 @@ function getDefaultCompetency() {
     };
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-document.getElementById("createAccount").addEventListener("click", async () => {
-    event.preventDefault();
-    createAccount(document.getElementById("name").value, document.getElementById("email").value, document.getElementById("student-id").value);
-});
+const createAccountButton = document.getElementById("createAccount");
+if (createAccountButton) {
+    createAccountButton.addEventListener("click", async (event) => {
+        event.preventDefault();
+        createAccount(
+            document.getElementById("name").value,
+            document.getElementById("email").value,
+            document.getElementById("student-id").value
+        );
+    });
+}
 
 // 🔹 Function: Create a Tutor Account
 async function createAccount(name, email, studentID, phone = "N/A") {
@@ -193,23 +200,26 @@ async function loginTutor(event) {
     }
 }
 
-document.getElementById("login-form")?.addEventListener("submit", async (event) => {
-    event.preventDefault();
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Now it won't error
 
-    const email = document.getElementById("login-email")?.value.trim();
-    const studentID = document.getElementById("login-student-id")?.value.trim();
+        const email = document.getElementById("login-email")?.value.trim();
+        const studentID = document.getElementById("login-student-id")?.value.trim();
 
-    if (!email || !studentID) {
-        alert("⚠️ Please fill out all required fields.");
-        return;
-    }
+        if (!email || !studentID) {
+            alert("⚠️ Please fill out all required fields.");
+            return;
+        }
 
-    try {
-        await loginTutor(email, studentID);
-    } catch (error) {
-        alert(`❌ Error creating account: ${error.message}`);
-    }
-});
+        try {
+            await loginTutor(email, studentID);
+        } catch (error) {
+            alert(`❌ Error creating account: ${error.message}`);
+        }
+    });
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Add a Verified Skill Using a Teacher Code
