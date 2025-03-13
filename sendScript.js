@@ -314,57 +314,6 @@ function logout() {
     window.location.href = "index.html";
 }
 
-async function loginTutor(email, studentID) {
-
-    const messageBox = document.getElementById("account-message");
-
-    messageBox.innerText = ""; // Clear previous messages
-
-    try {
-        const tutorRef = doc(db, "users", email);
-        const tutorSnap = await getDoc(tutorRef);
-
-        if (!tutorSnap.exists()) {
-            throw new Error("⚠️ No account found with this email.");
-        }
-
-        const tutor = tutorSnap.data();
-
-        if (tutor.studentID !== studentID) {
-            throw new Error("⚠️ Incorrect student ID.");
-        }
-
-        // 🔹 Store session in localStorage
-        localStorage.setItem("loggedInTutor", email);
-
-        // 🔹 Redirect to Dashboard
-        window.location.href = "dashboard.html";
-    } catch (error) {
-        messageBox.innerText = `❌ ${error.message}`;
-        messageBox.style.color = "red";
-    }
-}
-
-const loginForm = document.getElementById("login-form");
-if (loginForm) {
-    loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault(); // Now it won't error
-
-        const email = document.getElementById("login-email")?.value.trim();
-        const studentID = document.getElementById("login-student-id")?.value.trim();
-
-        if (!email || !studentID) {
-            alert("⚠️ Please fill out all required fields.");
-            return;
-        }
-
-        try {
-            await loginTutor(email, studentID);
-        } catch (error) {
-            alert(`❌ Error creating account: ${error.message}`);
-        }
-    });
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
