@@ -250,6 +250,122 @@ async function addSkill(email, code) {
         alert(`❌ Error: ${error.message}`);
     }
 }
+
+document.addEventListener("DOMContentLoaded", async function () {
+     if (!window.location.pathname.includes("dashboard.html")) return;
+
+    const accountName = document.getElementById("account-name");
+    const accountEmail = document.getElementById("account-email");
+
+    const loggedInTutor = localStorage.getItem("loggedInTutor");
+
+    if (!loggedInTutor) {
+        window.location.href = "index.html"; // Redirect if not logged in
+        return;
+    }
+
+    try {
+        const tutorRef = doc(db, "users", loggedInTutor);
+        const tutorSnap = await getDoc(tutorRef);
+
+        if (!tutorSnap.exists()) {
+            throw new Error("Tutor data not found.");
+        }
+
+        const tutor = tutorSnap.data();
+
+        accountName.innerText = tutor.name || "Tutor";
+        accountEmail.innerText = loggedInTutor;
+
+        loadSubjects(tutor.subjects || []);
+    } catch (error) {
+        document.getElementById("account-message").innerText = `❌ ${error.message}`;
+    }
+});
+
+function updateTutor() {
+    const email = document.getElementById("account-email").innerText;
+    const teacherCode = document.getElementById("teacher-code").value;
+
+    if (!teacherCode) {
+        alert("Please enter a teacher code.");
+        return;
+    }
+
+    addSkill(email, teacherCode);
+
+    // 🔹 Call a function to update tutor data in Firestore
+    console.log(`Updating tutor ${email} with code: ${teacherCode}`);
+}
+
+function loadSubjects(subjects) {
+    const subjectsContainer = document.getElementById("subjects-container");
+    subjectsContainer.innerHTML = "";
+
+    subjects.forEach(subject => {
+        const subjectElement = document.createElement("div");
+        subjectElement.textContent = subject;
+        subjectsContainer.appendChild(subjectElement);
+    });
+}
+
+function logout() {
+    localStorage.removeItem("loggedInTutor");
+    window.location.href = "index.html";
+}
+
+async function loginTutor(email, studentID) {
+
+    const messageBox = document.getElementById("account-message");
+
+    messageBox.innerText = ""; // Clear previous messages
+
+    try {
+        const tutorRef = doc(db, "users", email);
+        const tutorSnap = await getDoc(tutorRef);
+
+        if (!tutorSnap.exists()) {
+            throw new Error("⚠️ No account found with this email.");
+        }
+
+        const tutor = tutorSnap.data();
+
+        if (tutor.studentID !== studentID) {
+            throw new Error("⚠️ Incorrect student ID.");
+        }
+
+        // 🔹 Store session in localStorage
+        localStorage.setItem("loggedInTutor", email);
+
+        // 🔹 Redirect to Dashboard
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        messageBox.innerText = `❌ ${error.message}`;
+        messageBox.style.color = "red";
+    }
+}
+
+const loginForm = document.getElementById("login-form");
+if (loginForm) {
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Now it won't error
+
+        const email = document.getElementById("login-email")?.value.trim();
+        const studentID = document.getElementById("login-student-id")?.value.trim();
+
+        if (!email || !studentID) {
+            alert("⚠️ Please fill out all required fields.");
+            return;
+        }
+
+        try {
+            await loginTutor(email, studentID);
+        } catch (error) {
+            alert(`❌ Error creating account: ${error.message}`);
+        }
+    });
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
 async function logHours(email, hoursLogged, teacherCode = null) {
@@ -277,4 +393,5 @@ async function logHours(email, hoursLogged, teacherCode = null) {
 }
 
 // 🔹 Export Functions for Other Scripts
-export { createAccount, updateTutorData, addSkill, logHours };
+Object.assign(window, {updateTutor});
+export { createAccount, updateTutorData, addSkill, logHours, updateTutor};
