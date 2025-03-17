@@ -20,7 +20,7 @@
     let subjectJson = await fetchFirestoreData("subjects");
     console.log(jsonData);
     console.log(subjectJson);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Subject-to-Class Level Map
 const CLASS_LEVELS = {
     "Math": ["Algebra 1", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
@@ -31,14 +31,14 @@ const CLASS_LEVELS = {
     "Computer Science": ["CS Principles", "CS 1", "CS A"],
     "Biology": ["Honors Biology", "AP Biology"]
 };
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Modify Visibility Based on Subject Selection
 async function modifyVisibility() {
     const subject = document.getElementById("subject").value;
     const subcategoryContainer = document.getElementById("subcategory-container");
     const email = localStorage.getItem("loggedInTutor");
 
-    subcategoryContainer.innerHTML = ""; // Clear previous selections
+    subcategoryContainer.innerHTML = ""; // Clear previous content
 
     if (!subject || !email) {
         subcategoryContainer.innerHTML = "<p>⚠️ Please select a subject.</p>";
@@ -58,13 +58,20 @@ async function modifyVisibility() {
 
         // Ensure competency array matches class list length
         const classList = CLASS_LEVELS[subject] || [];
-        while (competency.length < classList.length) {
-            competency.push(false); // Fill with false if missing
+        if (classList.length === 0) {
+            subcategoryContainer.innerHTML = "<p>⚠️ No subcategories available.</p>";
+            return;
         }
+
+        while (competency.length < classList.length) {
+            competency.push(false); // Ensure all classes have a visibility state
+        }
+
+        console.log("✅ Competency Data:", competency); // Debugging Log
 
         // Create checkboxes based on competency array
         classList.forEach((className, index) => {
-            const isChecked = competency[index]; // Will be true/false
+            const isChecked = competency[index];
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -89,10 +96,11 @@ async function modifyVisibility() {
         subcategoryContainer.appendChild(saveButton);
 
     } catch (error) {
+        console.error("❌ Error in modifyVisibility:", error);
         subcategoryContainer.innerHTML = `<p>❌ Error: ${error.message}</p>`;
     }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Save Updated Visibility
 async function saveVisibility(subject) {
     const email = localStorage.getItem("loggedInTutor");
@@ -123,7 +131,7 @@ async function saveVisibility(subject) {
         alert(`❌ Error updating visibility: ${error.message}`);
     }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Attach Event Listener to Subject Dropdown
 document.getElementById("subject")?.addEventListener("change", modifyVisibility);
 
@@ -132,4 +140,13 @@ function logout() {
     localStorage.removeItem("loggedInTutor");
     window.location.href = "manage_account.html";
 }
-window.logout = logout; // Expose logout function globally
+window.logout = logout; // Ensure it works in the global scope
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+document.addEventListener("DOMContentLoaded", () => {
+    const subjectDropdown = document.getElementById("subject");
+    if (subjectDropdown) {
+        subjectDropdown.addEventListener("change", modifyVisibility);
+    } else {
+        console.error("❌ Subject dropdown not found!");
+    }
+});
