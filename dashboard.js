@@ -150,3 +150,4 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("❌ Subject dropdown not found!");
     }
 });
+Object.assign(window, {fetchFirestoreData, logout});
