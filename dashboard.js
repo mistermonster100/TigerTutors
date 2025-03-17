@@ -54,17 +54,17 @@ async function modifyVisibility() {
         }
 
         const tutor = tutorSnap.data();
-        const competency = tutor.competency[subject] || [];
+        let competency = tutor.competency[subject] || [];
 
-        // Create checkboxes based on competency array
-        const classList = CLASS_LEVELS[subject];
-        if (!classList) {
-            subcategoryContainer.innerHTML = "<p>⚠️ No subcategories found for this subject.</p>";
-            return;
+        // Ensure competency array matches class list length
+        const classList = CLASS_LEVELS[subject] || [];
+        while (competency.length < classList.length) {
+            competency.push(false); // Fill with false if missing
         }
 
+        // Create checkboxes based on competency array
         classList.forEach((className, index) => {
-            const isChecked = competency[index] || false; // Default to false if not found
+            const isChecked = competency[index]; // Will be true/false
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -127,11 +127,9 @@ async function saveVisibility(subject) {
 // 🔹 Attach Event Listener to Subject Dropdown
 document.getElementById("subject")?.addEventListener("change", modifyVisibility);
 
-// 🔹 Logout Function
+// 🔹 Logout Function (Now works!)
 function logout() {
     localStorage.removeItem("loggedInTutor");
     window.location.href = "manage_account.html";
 }
-
-// Expose logout function to HTML button
-window.logout = logout;
+window.logout = logout; // Expose logout function globally
