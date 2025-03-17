@@ -152,3 +152,4 @@ document.getElementById("findTutorsBtn")?.addEventListener("click", findTutors);
     }
 
     Object.assign(window, {updateSubcategories, findTutors});
+    export {fetchFirestoreData};
