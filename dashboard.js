@@ -1,6 +1,6 @@
- import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+    import { fetchFirestoreData } from "script.js";  // Replace with correct file
     // 🔹 Replace with your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDjSRPgwoeNdSnRleq85mS_mqmV9Tdrkzs",
@@ -20,6 +20,8 @@
     let subjectJson = await fetchFirestoreData("subjects");
     console.log(jsonData);
     console.log(subjectJson);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Subject-to-Class Level Map
 const CLASS_LEVELS = {
@@ -140,7 +142,7 @@ function logout() {
     localStorage.removeItem("loggedInTutor");
     window.location.href = "manage_account.html";
 }
-window.logout = logout; // Ensure it works in the global scope
+window.logout = logout;  // Make it globally available
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener("DOMContentLoaded", () => {
     const subjectDropdown = document.getElementById("subject");
