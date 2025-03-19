@@ -111,7 +111,7 @@ async function saveVisibility(subject) {
         return;
     }
 
-    const tutorRef = doc(db, "tutors", email);
+    const tutorRef = doc(db, "users", email);
     const tutorSnap = await getDoc(tutorRef);
     if (!tutorSnap.exists()) {
         alert("⚠️ Tutor account not found!");
