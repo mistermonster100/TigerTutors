@@ -27,7 +27,7 @@
 const CLASS_LEVELS = {
     "Math": ["Algebra 1", "Geometry", "Algebra 2", "Precalculus", "Calculus AB", "Calculus BC", "Calculus 3"],
     "English": ["English 9", "English 10", "English 11", "English 12", "Speech"],
-    "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History", "AP Microeconomics", "AP Macroeconomics"],
+    "Social Studies": ["World History", "AP World History", "US History", "AP US History", "European History", "AP Microeconomics", "AP Macroeconomics", "Gov", "AP/ACP Gov"],
     "Physics": ["Physics 1", "Physics 2", "Physics C"],
     "Chemistry": ["Honors Chemistry", "AP Chemistry"],
     "Computer Science": ["CS Principles", "CS 1", "CS A"],
@@ -48,7 +48,7 @@ async function modifyVisibility() {
     }
 
     try {
-        const tutorRef = doc(db, "tutors", email);
+        const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
 
         if (!tutorSnap.exists()) {
