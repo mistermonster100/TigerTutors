@@ -65,9 +65,9 @@ async function modifyVisibility() {
             return;
         }
 
-        while (competency.length < classList.length) {
+        /*while (competency.length < classList.length) {
             competency.push(false); // Ensure all classes have a visibility state
-        }
+        }*/
 
         console.log("✅ Competency Data:", competency); // Debugging Log
 
