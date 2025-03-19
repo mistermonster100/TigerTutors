@@ -72,7 +72,7 @@ async function modifyVisibility() {
         console.log("✅ Competency Data:", competency); // Debugging Log
 
         // Create checkboxes based on competency array
-        classList.forEach((className, index) => {
+        competency.forEach((className, index) => {
             const isChecked = competency[index];
 
             const checkbox = document.createElement("input");
