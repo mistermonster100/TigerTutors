@@ -72,24 +72,28 @@ async function modifyVisibility() {
         console.log("✅ Competency Data:", competency); // Debugging Log
 
         // Create checkboxes based on competency array
-        competency.forEach((className, index) => {
-            const isChecked = competency[index];
+        competency.forEach((isChecked, index) => {
+    const classList = CLASS_LEVELS[subject] || []; // Get subject class names
+    const className = classList[index] || `Class ${index + 1}`; // Fallback name if missing
 
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = `class-${index}`;
-            checkbox.checked = isChecked;
-            checkbox.dataset.index = index;
+    const div = document.createElement("div");
+    div.classList.add("checkbox-container"); // Add CSS class for styling
 
-            const label = document.createElement("label");
-            label.htmlFor = `class-${index}`;
-            label.textContent = className;
+    const label = document.createElement("label");
+    label.htmlFor = `class-${index}`;
+    label.textContent = className; // Correctly assigns class name from CLASS_LEVELS
 
-            const div = document.createElement("div");
-            div.appendChild(checkbox);
-            div.appendChild(label);
-            subcategoryContainer.appendChild(div);
-        });
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = `class-${index}`;
+    checkbox.checked = isChecked; // Correctly assigns true/false
+    checkbox.dataset.index = index;
+    checkbox.classList.add("checkbox-input"); // Add CSS class for styling
+
+    div.appendChild(label);  // ✅ Label (Class Name) First
+    div.appendChild(checkbox); // ✅ Checkbox Second
+    subcategoryContainer.appendChild(div);
+});
 
         // Add Save Changes Button
         const saveButton = document.createElement("button");
