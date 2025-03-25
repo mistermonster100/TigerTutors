@@ -21,7 +21,56 @@
     console.log(jsonData);
     console.log(subjectJson);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const TEACHER_CODES = {
+    "smith123": "Mr. Smith",
+    "johnson456": "Ms. Johnson",
+    "adams789": "Dr. Adams"
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+async function logHours() {
+    const email = localStorage.getItem("loggedInTutor");
+    if (!email) {
+        alert("⚠️ You must be logged in!");
+        return;
+    }
 
+    const hourInput = document.getElementById("hour-input").value.trim();
+    const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
+
+    if (!/^(\d{1,2}):[0-5]\d$/.test(hourInput)) {
+        alert("❌ Invalid time format. Use HH:MM (e.g. 03:30).");
+        return;
+    }
+
+    const isVerified = TEACHER_CODES.hasOwnProperty(teacherCodeInput);
+    const teacherName = isVerified ? TEACHER_CODES[teacherCodeInput] : null;
+
+    const hourString = isVerified 
+        ? `${hourInput}true-${teacherName}`
+        : `${hourInput}false`;
+
+    const tutorRef = doc(db, "tutors", email);
+    const tutorSnap = await getDoc(tutorRef);
+    if (!tutorSnap.exists()) {
+        alert("⚠️ Tutor not found!");
+        return;
+    }
+
+    const currentData = tutorSnap.data();
+    const updatedHours = currentData.hours || [];
+    updatedHours.push(hourString);
+
+    await updateDoc(tutorRef, { hours: updatedHours });
+
+    alert("✅ Hours logged successfully!");
+
+    // Clear fields
+    document.getElementById("hour-input").value = "";
+    document.getElementById("teacher-code-input").value = "";
+}
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("log-hours-button")?.addEventListener("click", logHours);
+});
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Subject-to-Class Level Map
 const CLASS_LEVELS = {
