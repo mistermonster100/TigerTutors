@@ -49,7 +49,7 @@ async function logHours() {
         ? `${hourInput}true-${teacherName}`
         : `${hourInput}false`;
 
-    const tutorRef = doc(db, "tutors", email);
+    const tutorRef = doc(db, "users", email);
     const tutorSnap = await getDoc(tutorRef);
     if (!tutorSnap.exists()) {
         alert("⚠️ Tutor not found!");
@@ -68,6 +68,7 @@ async function logHours() {
     document.getElementById("hour-input").value = "";
     document.getElementById("teacher-code-input").value = "";
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("log-hours-button")?.addEventListener("click", logHours);
 });
