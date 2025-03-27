@@ -40,9 +40,6 @@ async function logHours() {
         return;
     }
 
-    const hourInput = document.getElementById("hour-input").value.trim();
-    const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
-
     if (!/^(\d{1,2}):[0-5]\d$/.test(hourInput)) {
         alert("❌ Invalid time format. Use HH:MM (e.g. 03:30).");
         return;
