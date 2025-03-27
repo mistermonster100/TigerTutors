@@ -28,7 +28,11 @@ const TEACHER_CODES = {
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function logHours() {
-     console.log("logHours clicked!"); // debug line
+     console.log("🕒 Log Hours button clicked!");
+
+    const hourInput = document.getElementById("hour-input").value.trim();
+    const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
+    console.log("Input received:", hourInput, teacherCodeInput);
 ////////////////////////////////////////////////////////////////////////////
     const email = localStorage.getItem("loggedInTutor");
     if (!email) {
@@ -71,12 +75,13 @@ async function logHours() {
     document.getElementById("teacher-code-input").value = "";
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-document.addEventListener("DOMContentLoaded", () => {
-    const logButton = document.getElementById("log-hours-button");
-    if (logButton) {
-        logButton.addEventListener("click", logHours);
+window.addEventListener("load", () => {
+    const logBtn = document.getElementById("log-hours-button");
+    if (logBtn) {
+        console.log("✅ Button found, attaching listener.");
+        logBtn.addEventListener("click", logHours);
     } else {
-        console.error("Log button not found!");
+        console.error("❌ Log button not found in DOM.");
     }
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
