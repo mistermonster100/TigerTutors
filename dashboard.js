@@ -27,60 +27,60 @@ const TEACHER_CODES = {
     "adams789": "Dr. Adams"
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function logHours() {
-     console.log("🕒 Log Hours button clicked!");
+// async function logHours() {
+//      console.log("🕒 Log Hours button clicked!");
 
-    const hourInput = document.getElementById("hour-input").value.trim();
-    const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
-    console.log("Input received:", hourInput, teacherCodeInput);
-////////////////////////////////////////////////////////////////////////////
-    const email = localStorage.getItem("loggedInTutor");
-    if (!email) {
-        alert("⚠️ You must be logged in!");
-        return;
-    }
+//     const hourInput = document.getElementById("hour-input").value.trim();
+//     const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
+//     console.log("Input received:", hourInput, teacherCodeInput);
+// ////////////////////////////////////////////////////////////////////////////
+//     const email = localStorage.getItem("loggedInTutor");
+//     if (!email) {
+//         alert("⚠️ You must be logged in!");
+//         return;
+//     }
 
-    if (!/^(\d{1,2}):[0-5]\d$/.test(hourInput)) {
-        alert("❌ Invalid time format. Use HH:MM (e.g. 03:30).");
-        return;
-    }
+//     if (!/^(\d{1,2}):[0-5]\d$/.test(hourInput)) {
+//         alert("❌ Invalid time format. Use HH:MM (e.g. 03:30).");
+//         return;
+//     }
 
-    const isVerified = TEACHER_CODES.hasOwnProperty(teacherCodeInput);
-    const teacherName = isVerified ? TEACHER_CODES[teacherCodeInput] : null;
+//     const isVerified = TEACHER_CODES.hasOwnProperty(teacherCodeInput);
+//     const teacherName = isVerified ? TEACHER_CODES[teacherCodeInput] : null;
 
-    const hourString = isVerified 
-        ? `${hourInput}true-${teacherName}`
-        : `${hourInput}false`;
+//     const hourString = isVerified 
+//         ? `${hourInput}true-${teacherName}`
+//         : `${hourInput}false`;
 
-    const tutorRef = doc(db, "users", email);
-    const tutorSnap = await getDoc(tutorRef);
-    if (!tutorSnap.exists()) {
-        alert("⚠️ Tutor not found!");
-        return;
-    }
+//     const tutorRef = doc(db, "users", email);
+//     const tutorSnap = await getDoc(tutorRef);
+//     if (!tutorSnap.exists()) {
+//         alert("⚠️ Tutor not found!");
+//         return;
+//     }
 
-    const currentData = tutorSnap.data();
-    const updatedHours = currentData.hours || [];
-    updatedHours.push(hourString);
+//     const currentData = tutorSnap.data();
+//     const updatedHours = currentData.hours || [];
+//     updatedHours.push(hourString);
 
-    await updateDoc(tutorRef, { hours: updatedHours });
+//     await updateDoc(tutorRef, { hours: updatedHours });
 
-    alert("✅ Hours logged successfully!");
+//     alert("✅ Hours logged successfully!");
 
-    // Clear fields
-    document.getElementById("hour-input").value = "";
-    document.getElementById("teacher-code-input").value = "";
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-window.addEventListener("load", () => {
-    const logBtn = document.getElementById("log-hours-button");
-    if (logBtn) {
-        console.log("✅ Button found, attaching listener.");
-        logBtn.addEventListener("click", logHours);
-    } else {
-        console.error("❌ Log button not found in DOM.");
-    }
-});
+//     // Clear fields
+//     document.getElementById("hour-input").value = "";
+//     document.getElementById("teacher-code-input").value = "";
+// }
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// window.addEventListener("load", () => {
+//     const logBtn = document.getElementById("log-hours-button");
+//     if (logBtn) {
+//         console.log("✅ Button found, attaching listener.");
+//         logBtn.addEventListener("click", logHours);
+//     } else {
+//         console.error("❌ Log button not found in DOM.");
+//     }
+// });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Subject-to-Class Level Map
 const CLASS_LEVELS = {
