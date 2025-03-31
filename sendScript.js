@@ -317,7 +317,7 @@ function logout() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
-export async function logHours(email, hoursLogged, teacherCode = null) {
+async function logHours(email, hoursLogged, teacherCode = null) {
   try {
     if (isNaN(hoursLogged) || hoursLogged <= 0) {
       throw new Error("⚠️ Please enter a valid number of hours.");
