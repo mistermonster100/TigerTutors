@@ -26,45 +26,55 @@
 //     "johnson456": "Ms. Johnson",
 //     "adams789": "Dr. Adams"
 // };
-
-import { logHours } from "./sendScript.js"; // Adjust path if needed
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import { logHours } from "./sendScript.js"; // Adjust the path if needed
 
 window.addEventListener("load", () => {
   const logBtn = document.getElementById("log-hours-button");
   if (logBtn) {
+    console.log("✅ Log button found. Attaching click listener.");
     logBtn.addEventListener("click", async () => {
+      console.log("✅ Log button clicked.");
       try {
-        // 1) Get the raw hour input, e.g. "02:30"
+        // Get the hour input (format HH:MM)
         const hourInput = document.getElementById("hour-input").value.trim();
-        // 2) Get teacher code
+        // Get the teacher code input (optional)
         const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
-        // 3) Convert "HH:MM" to a numeric value
-        let [hh, mm] = hourInput.split(":");
+        console.log("Input received:", hourInput, teacherCodeInput);
+        
+        // Convert "HH:MM" to a numeric value (hours as decimal)
+        const [hh, mm] = hourInput.split(":");
         if (!hh || !mm) {
           throw new Error("Please use HH:MM format, e.g. 02:30");
         }
-        const hoursAsNumber = parseInt(hh, 10) + parseInt(mm, 10)/60;
-
-        // 4) Grab current user’s email from localStorage
+        const hoursAsNumber = parseInt(hh, 10) + parseInt(mm, 10) / 60;
+        console.log("Converted hours:", hoursAsNumber);
+        
+        // Get the logged in tutor's email from localStorage
         const email = localStorage.getItem("loggedInTutor");
         if (!email) {
           throw new Error("⚠️ You must be logged in before logging hours.");
         }
-
-        // 5) Call logHours from sendScript.js
+        console.log("Logging hours for:", email);
+        
+        // Call the unified logHours function from sendScript.js
         await logHours(email, hoursAsNumber, teacherCodeInput);
-
-        // 6) Clear fields on success
+        console.log("✅ logHours called successfully.");
+        
+        // Clear the input fields
         document.getElementById("hour-input").value = "";
         document.getElementById("teacher-code-input").value = "";
+        console.log("✅ Input fields cleared.");
       } catch (err) {
         alert(`❌ Error: ${err.message}`);
+        console.error("Error in click handler:", err);
       }
     });
   } else {
-    console.error("❌ Could not find log-hours-button in DOM");
+    console.error("❌ Log button not found in DOM");
   }
 });
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // async function logHours() {
 //      console.log("🕒 Log Hours button clicked!");
