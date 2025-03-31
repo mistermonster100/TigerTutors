@@ -76,7 +76,7 @@ window.addEventListener("load", () => {
     const logBtn = document.getElementById("log-hours-button");
     if (logBtn) {
         console.log("✅ Button found, attaching listener.");
-        logBtn.addEventListener("click", logHours);
+        logBtn.addEventListener("change", logHours);
     } else {
         console.error("❌ Log button not found in DOM.");
     }
