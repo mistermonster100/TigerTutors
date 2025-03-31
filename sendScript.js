@@ -252,36 +252,38 @@ async function addSkill(email, code) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-     if (!window.location.pathname.includes("dashboard.html")) return;
+  if (!window.location.pathname.includes("dashboard.html")) return;
 
-    const accountName = document.getElementById("account-name");
-    const accountEmail = document.getElementById("account-email");
+  const accountName = document.getElementById("account-name");
+  const accountEmail = document.getElementById("account-email");
 
-    const loggedInTutor = localStorage.getItem("loggedInTutor");
+  const loggedInTutor = localStorage.getItem("loggedInTutor");
 
-    if (!loggedInTutor) {
-        window.location.href = "index.html"; // Redirect if not logged in
-        return;
+  if (!loggedInTutor) {
+    window.location.href = "index.html"; // Redirect if not logged in
+    return;
+  }
+
+  try {
+    const tutorRef = doc(db, "users", loggedInTutor);
+    const tutorSnap = await getDoc(tutorRef);
+
+    if (!tutorSnap.exists()) {
+      throw new Error("Tutor data not found.");
     }
 
-    try {
-        const tutorRef = doc(db, "users", loggedInTutor);
-        const tutorSnap = await getDoc(tutorRef);
+    const tutor = tutorSnap.data();
 
-        if (!tutorSnap.exists()) {
-            throw new Error("Tutor data not found.");
-        }
+    accountName.innerText = tutor.name || "Tutor";
+    accountEmail.innerText = loggedInTutor;
 
-        const tutor = tutorSnap.data();
-
-        accountName.innerText = tutor.name || "Tutor";
-        accountEmail.innerText = loggedInTutor;
-
-        loadSubjects(tutor.subjects || []);
-    } catch (error) {
-        document.getElementById("account-message").innerText = `❌ ${error.message}`;
-    }
+    loadSubjects(tutor.subjects || []);
+  } catch (error) {
+    // Instead of updating an element, use an alert to show errors.
+    alert(`❌ ${error.message}`);
+  }
 });
+
 
 function updateTutor() {
     const email = document.getElementById("account-email").innerText;
