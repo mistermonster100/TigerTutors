@@ -61,9 +61,9 @@ const VALID_CODES = {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Teacher List with Verification Codes
 const TEACHER_LIST = {
-    "Mr. Smith": "smith123",
-    "Ms. Johnson": "johnson456",
-    "Dr. Adams": "adams789"
+  "smith123": "Mr. Smith",
+  "johnson456": "Ms. Johnson",
+  "adams789": "Dr. Adams"
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Default Competency Structure (Populated with `false` initially)
@@ -317,28 +317,28 @@ function logout() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 🔹 Function: Log Hours with Optional Verification
-async function logHours(email, hoursLogged, teacherCode = null) {
-    try {
-        if (isNaN(hoursLogged) || hoursLogged <= 0) {
-            throw new Error("⚠️ Please enter a valid number of hours.");
-        }
-
-        const isVerified = TEACHER_LIST.hasOwnProperty(teacherCode);
-        const tutorRef = doc(db, "users", email);
-
-        await updateDoc(tutorRef, {
-            hours: arrayUnion({
-                date: new Date().toISOString().split("T")[0],
-                hours: hoursLogged,
-                teacherCode: isVerified ? teacherCode : null,
-                verified: isVerified
-            })
-        });
-
-        alert(`✅ Hours logged successfully! ${isVerified ? "Verified by teacher." : "Pending verification."}`);
-    } catch (error) {
-        alert(`❌ Error: ${error.message}`);
+export async function logHours(email, hoursLogged, teacherCode = null) {
+  try {
+    if (isNaN(hoursLogged) || hoursLogged <= 0) {
+      throw new Error("⚠️ Please enter a valid number of hours.");
     }
+    
+    const isVerified = teacherCode && TEACHER_LIST.hasOwnProperty(teacherCode);
+    const tutorRef = doc(db, "users", email);
+    
+    await updateDoc(tutorRef, {
+      hours: arrayUnion({
+        date: new Date().toISOString().split("T")[0], // e.g., "2025-03-31"
+        hours: hoursLogged,
+        teacherCode: isVerified ? teacherCode : null,
+        verified: isVerified
+      })
+    });
+    
+    alert(`✅ Hours logged successfully! ${isVerified ? "Verified by teacher." : "Pending verification."}`);
+  } catch (error) {
+    alert(`❌ Error: ${error.message}`);
+  }
 }
 
 // 🔹 Export Functions for Other Scripts
