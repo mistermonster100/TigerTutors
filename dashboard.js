@@ -21,11 +21,50 @@
     console.log(jsonData);
     console.log(subjectJson);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const TEACHER_CODES = {
-    "smith123": "Mr. Smith",
-    "johnson456": "Ms. Johnson",
-    "adams789": "Dr. Adams"
-};
+// const TEACHER_CODES = {
+//     "smith123": "Mr. Smith",
+//     "johnson456": "Ms. Johnson",
+//     "adams789": "Dr. Adams"
+// };
+
+import { logHours } from "./sendScript.js"; // Adjust path if needed
+
+window.addEventListener("load", () => {
+  const logBtn = document.getElementById("log-hours-button");
+  if (logBtn) {
+    logBtn.addEventListener("click", async () => {
+      try {
+        // 1) Get the raw hour input, e.g. "02:30"
+        const hourInput = document.getElementById("hour-input").value.trim();
+        // 2) Get teacher code
+        const teacherCodeInput = document.getElementById("teacher-code-input").value.trim();
+        // 3) Convert "HH:MM" to a numeric value
+        let [hh, mm] = hourInput.split(":");
+        if (!hh || !mm) {
+          throw new Error("Please use HH:MM format, e.g. 02:30");
+        }
+        const hoursAsNumber = parseInt(hh, 10) + parseInt(mm, 10)/60;
+
+        // 4) Grab current user’s email from localStorage
+        const email = localStorage.getItem("loggedInTutor");
+        if (!email) {
+          throw new Error("⚠️ You must be logged in before logging hours.");
+        }
+
+        // 5) Call logHours from sendScript.js
+        await logHours(email, hoursAsNumber, teacherCodeInput);
+
+        // 6) Clear fields on success
+        document.getElementById("hour-input").value = "";
+        document.getElementById("teacher-code-input").value = "";
+      } catch (err) {
+        alert(`❌ Error: ${err.message}`);
+      }
+    });
+  } else {
+    console.error("❌ Could not find log-hours-button in DOM");
+  }
+});
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // async function logHours() {
 //      console.log("🕒 Log Hours button clicked!");
