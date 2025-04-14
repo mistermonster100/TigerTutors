@@ -182,7 +182,6 @@ async function loginTutor(email, studentID) {
         }
 
         const tutor = tutorSnap.data();
-        const email = tutor.email;
         console.log(email);
         if (tutor.studentID !== studentID) {
             throw new Error("⚠️ Incorrect student ID.");
