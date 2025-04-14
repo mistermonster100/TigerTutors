@@ -175,17 +175,19 @@ async function loginTutor(email, studentID) {
     try {
         const tutorRef = doc(db, "users", email);
         const tutorSnap = await getDoc(tutorRef);
+        console.log(tutorSnap);
 
         if (!tutorSnap.exists()) {
             throw new Error("⚠️ No account found with this email.");
         }
 
         const tutor = tutorSnap.data();
-
+        const email = tutor.email;
+        console.log(email);
         if (tutor.studentID !== studentID) {
             throw new Error("⚠️ Incorrect student ID.");
         }
-
+    
         // 🔹 Store session in localStorage
         localStorage.setItem("loggedInTutor", email);
 
