@@ -31,6 +31,7 @@ import { logHours } from "./sendScript.js"; // Adjust the path if needed
 
 window.addEventListener("load", () => {
   const logBtn = document.getElementById("log-hours-button");
+  console.log("Trying to find log Button");
   if (logBtn) {
     console.log("✅ Log button found. Attaching click listener.");
     logBtn.addEventListener("click", async () => {
